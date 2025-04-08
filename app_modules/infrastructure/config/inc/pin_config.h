@@ -34,7 +34,7 @@ extern "C" {
 /******************************************************************************/
 
 
-#define IR_SWITCH_GPIO            GPIO_NUM_8
+#define IR_SWITCH_GPIO            GPIO_NUM_34
 
 
 #define  GPIO_PIN_RESET 0
