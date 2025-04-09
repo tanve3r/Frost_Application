@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include "esp_log.h"
 #include "ir_switch.h"
+#include "led.h"
 #include "syssm.h"
 
 
@@ -70,6 +71,7 @@ const static char *TAG = "sysSM";
 void SysSm_Init(void)
 {
   ESP_LOGI(TAG, "Hello from System \n");
+  Led_Init();
 }
 
 /**
@@ -78,6 +80,7 @@ void SysSm_Init(void)
  */
 void SysSm_Process (void)
 { 
+	Led_Blink(5000);
 	IRSwitch_State status = GetIRswitchStatus();
 	ESP_LOGI(TAG, "IR:%d\n", status);
 }

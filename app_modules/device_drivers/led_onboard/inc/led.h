@@ -10,12 +10,12 @@
  *
  *******************************************************************************
  *  PROJECT              FROST
- *  File Name          : ir_switch
- *  Description        : Code for IR switch 
+ *  File Name          : on board led
+ *  Description        : Code for led
  ******************************************************************************/
 
-#ifndef IR_SWITCH_H
-#define IR_SWITCH_H
+#ifndef LED_H
+#define LED_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,14 +35,11 @@ extern "C" {
 /******************************************************************************/
 /* PUBLIC TYPE DEFINITIONS                                                    */
 /******************************************************************************/
-/*
- * @brief IR latch state
- */
-typedef enum IRSwitch_State
+typedef enum LED_State
 {
-  IR_SWITCH_RESET = 0,
-  IR_SWITCH_SET
-}IRSwitch_State;
+  LED_ON = 0,
+  LED_OFF
+}LED_State;
 
 /******************************************************************************/
 /* PUBLIC DATA DECLARATIONS                                                   */
@@ -52,12 +49,13 @@ typedef enum IRSwitch_State
 /******************************************************************************/
 /* PUBLIC FUNCTION DECLARATIONS                                               */
 /******************************************************************************/
-void IR_Switch_Init(void);
-uint8_t GetIRswitchStatus(void);
+void Led_Init(void);
+void Led_Blink(uint32_t time_ms);
+void Led_Set(LED_State Ledstate);
 
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // IR_SWITCH_H
+#endif // LED_H

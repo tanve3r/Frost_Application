@@ -1,6 +1,14 @@
 # frost
 
-#Steps to flash the code 
+### Configure the Project
+
+Open the project configuration menu (`idf.py menuconfig`).
+
+### Build and Flash
+
+Run `idf.py -p COM5 flash monitor` to build, flash and monitor the project.
+
+#Steps to flash the code with espress toolchain
 
   1. install Python : https://www.python.org/downloads/
      NOTE: Select add path variable during installation

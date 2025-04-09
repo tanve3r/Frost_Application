@@ -10,8 +10,8 @@
  *
  *******************************************************************************
  *  PROJECT              FROST
- *  File Name          : ir_switch
- *  Description        : Code for IR switch 
+ *  File Name          : on board led
+ *  Description        : Code for led
  ******************************************************************************/
 
 
@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include "esp_log.h"
 #include "driver/gpio.h"
-#include "ir_switch.h"
+#include "led.h"
 #include "pin_config.h"
 #include "extended_services.h"
 
@@ -37,7 +37,7 @@
 /******************************************************************************/
 /* PRIVATE FUNCTION DECLARATIONS AND PRIVATE MACRO FUNCTION DEFINITIONS       */
 /******************************************************************************/
-//const static char *TAG = "IR_SW";
+
 /******************************************************************************/
 /* EXTERN VARIABLE DEFINTIONS                                                 */
 /******************************************************************************/
@@ -45,41 +45,62 @@
 /******************************************************************************/
 /* PRIVATE DATA DEFINTIONS                                                    */
 /******************************************************************************/
-static Srvc_DebounceParam_t st_Ir_tmdeb_ms;
-static Srvc_DebounceState_t st_Ir_stateDeb = {0,0};
+//const static char *TAG = "Led";
+
+static Srvc_SWTmrU32_t led_blink_timer;
+static uint32_t ledtoggle = 0;
 
 /******************************************************************************/
 /* PUBLIC FUNCTION DEFINITIONS                                                */
 /******************************************************************************/
 
 /**
- * @brief IR switch initialization function
+ * @brief led initialization function
  *
  */
-void IR_Switch_Init(void)
+void Led_Init(void)
 {
-  gpio_reset_pin(IR_SWITCH_GPIO);
-  gpio_set_direction(IR_SWITCH_GPIO, GPIO_MODE_INPUT);
-  gpio_set_pull_mode(IR_SWITCH_GPIO,GPIO_PULLDOWN_ONLY);
-  
-  st_Ir_tmdeb_ms.TimeHighLow = 200;
-  st_Ir_tmdeb_ms.TimeLowHigh = 10;
+  gpio_reset_pin(ON_BOARD_LED_GPIO);
+  gpio_set_direction(ON_BOARD_LED_GPIO, GPIO_MODE_OUTPUT);
+  gpio_set_level(ON_BOARD_LED_GPIO, 1);
+  Srvc_StartSWTmrU32(&led_blink_timer);
 }
 
 /**
- * @brief IR switch status
+ * @brief Function to blink on board led
+ * @param time_ms : time in ms
  *
  */
-uint8_t GetIRswitchStatus(void)
+void Led_Blink(uint32_t time_ms)
 {
-	IRSwitch_State IrSwitchStatus = (gpio_get_level(IR_SWITCH_GPIO) == 1) ? IR_SWITCH_RESET:IR_SWITCH_SET;
-	uint8_t debval = Srvc_Debounce((bool)IrSwitchStatus, 
-	                     &st_Ir_stateDeb,
-	                     &st_Ir_tmdeb_ms,
-	                     10);
-	                     
-//	ESP_LOGI(TAG, "IR:%d IRD:%d\n", IrSwitchStatus,debval);                     
-	return(debval);
+	if(Srvc_TestSWTmrU32(&led_blink_timer) != false) // timer stopped
+	{
+		Srvc_StartSWTmrU32(&led_blink_timer);
+	}
+	else if (Srvc_DiffSWTmrU32(&led_blink_timer) > time_ms) // timer elapsed
+	{
+		if(ledtoggle == 1)
+		{
+			ledtoggle = 0;
+		}
+		else
+		{
+			ledtoggle = 1;
+		}
+		gpio_set_level(ON_BOARD_LED_GPIO, ledtoggle);
+
+		Srvc_StartSWTmrU32(&led_blink_timer); // restart timer
+	}
+}
+
+/**
+ * @brief Function to switch on or off onboard led
+ * @param LED_State : ON/off
+ *
+ */
+void Led_Set(LED_State Ledstate)
+{
+	gpio_set_level(ON_BOARD_LED_GPIO, Ledstate);
 }
 
 /******************************************************************************/

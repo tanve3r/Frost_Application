@@ -36,6 +36,8 @@ extern "C" {
 
 #define IR_SWITCH_GPIO            GPIO_NUM_15
 
+#define ON_BOARD_LED_GPIO         GPIO_NUM_2
+
 
 #define  GPIO_PIN_RESET 0
 #define  GPIO_PIN_SET   1
