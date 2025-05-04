@@ -23,6 +23,7 @@
 #include "syssm.h"
 #include <inttypes.h>
 #include <stdio.h>
+#include "audio.h"
 
 /******************************************************************************/
 /* PRIVATE FUNCTION DECLARATIONS AND PRIVATE MACRO FUNCTION DEFINITIONS       */
@@ -38,6 +39,7 @@ void app_main(void) {
 
   // create task for the modules
   xTaskCreate(SysSm_task, "syssmTask", 2048, NULL, 4, NULL);
+  xTaskCreate(Audio_task, "Audio_task", 2048, NULL, 4, NULL);
 }
 
 /******************************************************************************/
